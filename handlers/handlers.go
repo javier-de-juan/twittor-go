@@ -17,7 +17,7 @@ func Handle() {
 }
 
 func getPort() string {
-	PORT := os.Getenv("PORT")
+	PORT := os.Getenv("TWITTOR_PORT")
 
 	if PORT == "" {
 		PORT = "8080"
