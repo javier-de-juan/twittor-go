@@ -3,6 +3,7 @@ package handlers
 import (
 	"github.com/gorilla/mux"
 	"github.com/javier-de-juan/twittor-go/middlew"
+	"github.com/javier-de-juan/twittor-go/routers"
 	"github.com/rs/cors"
 	"log"
 	"net/http"
@@ -12,7 +13,7 @@ import (
 func Handle() {
 	router  := mux.NewRouter()
 
-	router.HandleFunc("/registro", middlew.IsDbConnected(routers.Registro)).Methods("POST")
+	router.HandleFunc("/register", middlew.IsDbConnected(routers.Register)).Methods("POST")
 
 	PORT    := getPort()
 	handler := cors.AllowAll().Handler(router)
