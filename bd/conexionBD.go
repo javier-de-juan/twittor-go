@@ -10,6 +10,7 @@ import (
 
 var MongoCN = ConnectToDataBase()
 var clientOptions = getClientOptions()
+const dbName string = "twittor"
 
 func ConnectToDataBase() *mongo.Client {
 	client, err := mongo.Connect(context.TODO(), clientOptions)
