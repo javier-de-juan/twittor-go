@@ -2,7 +2,6 @@ package routers
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/javier-de-juan/twittor-go/bd"
 	"github.com/javier-de-juan/twittor-go/models"
 	"net/http"
@@ -13,7 +12,7 @@ func Register(writer http.ResponseWriter, request *http.Request) {
 	err := json.NewDecoder(request.Body).Decode(&user) // Una vez que uso el body, no se puede volver a usar porque es de tipo STREAM
 
 	if err != nil {
-		http.Error(writer, "Bad request: "+err.Error(), http.StatusBadRequest)
+		http.Error(writer, "Bad requestModel: "+err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -34,16 +33,6 @@ func Register(writer http.ResponseWriter, request *http.Request) {
 	}
 
 	writer.WriteHeader(http.StatusCreated)
-}
-
-func responseOnError(writer http.ResponseWriter) {
-	recoverReason := recover()
-
-	if recoverReason != nil {
-		errorMessage := fmt.Sprintf("%v", recoverReason)
-		http.Error(writer, "Bad request: "+errorMessage, http.StatusBadRequest)
-		return
-	}
 }
 
 func validate(user models.User) {
