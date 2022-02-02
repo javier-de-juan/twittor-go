@@ -14,6 +14,7 @@ func Handle() {
 	router  := mux.NewRouter()
 
 	router.HandleFunc("/register", middlew.IsDbConnected(routers.Register)).Methods("POST")
+	router.HandleFunc("/login", middlew.IsDbConnected(routers.Login)).Methods("POST")
 
 	PORT    := getPort()
 	handler := cors.AllowAll().Handler(router)
