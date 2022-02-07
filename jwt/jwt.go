@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-const key string = "SomosLosPutosAmos_rishmawiTeam"
+const Key string = "SomosLosPutosAmos_rishmawiTeam"
 
 func GetJWT(user models.User) (string, error) {
 
@@ -22,7 +22,7 @@ func GetJWT(user models.User) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, payload)
-	tokenStr, err := token.SignedString([]byte(key))
+	tokenStr, err := token.SignedString([]byte(Key))
 
 	if err != nil {
 		return tokenStr, err
