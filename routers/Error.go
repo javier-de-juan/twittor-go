@@ -10,7 +10,7 @@ func responseOnError(writer http.ResponseWriter) {
 
 	if recoverReason != nil {
 		errorMessage := fmt.Sprintf("%v", recoverReason)
-		http.Error(writer, "Bad requestModel: "+errorMessage, http.StatusBadRequest)
+		http.Error(writer, "Bad request: "+errorMessage, http.StatusBadRequest)
 		return
 	}
 }
