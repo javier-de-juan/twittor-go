@@ -40,7 +40,7 @@ func GetUserByEmail(email string) (models.User, bool, string) {
 	db := MongoCN.Database(dbName)
 	userCollection := db.Collection(collection)
 
-	condition := bson.M{"email":email}
+	condition := bson.M{"email": email}
 
 	var user models.User
 
@@ -51,6 +51,30 @@ func GetUserByEmail(email string) (models.User, bool, string) {
 	}
 
 	return user, true, user.ID.Hex()
+}
+
+func GetUserById(userId string) (models.User, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), getMaxExecutionTime())
+
+	defer cancel()
+
+	db := MongoCN.Database(dbName)
+	userCollection := db.Collection(collection)
+	id, _ := primitive.ObjectIDFromHex(userId)
+
+	condition := bson.M{"_id": id}
+
+	var user models.User
+
+	err := userCollection.FindOne(ctx, condition).Decode(&user)
+
+	if err != nil {
+		return user, err
+	}
+
+	user.Password = ""
+
+	return user, err
 }
 
 func getMaxExecutionTime() time.Duration {
