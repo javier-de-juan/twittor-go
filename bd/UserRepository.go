@@ -32,6 +32,66 @@ func Save(user models.User) (string, bool, error) {
 	return userID.String(), true, nil
 }
 
+func Update(user models.User, ID string) (bool, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), getMaxExecutionTime())
+
+	defer cancel()
+
+	db := MongoCN.Database(dbName)
+	userCollection := db.Collection(collection)
+
+	userUpdateString := bson.M{
+		"$set": getUserInfoToUpdate(user),
+	}
+
+	objID, _ := primitive.ObjectIDFromHex(ID)
+	filter := bson.M{
+		"_id": bson.M{
+			"$eq": objID,
+		},
+	}
+
+	_, err := userCollection.UpdateOne(ctx, filter, userUpdateString)
+
+	if err != nil {
+		return false, err
+	}
+
+	return true, err
+}
+
+func getUserInfoToUpdate(user models.User) map[string]interface{} {
+	userUpdated := make(map[string]interface{})
+
+	if len(user.Name) > 0 {
+		userUpdated["name"] = user.Name
+	}
+
+	if len(user.LastName) > 0 {
+		userUpdated["lastName"] = user.LastName
+	}
+
+	if len(user.Banner) > 0 {
+		userUpdated["banner"] = user.Banner
+	}
+
+	if len(user.Biography) > 0 {
+		userUpdated["biography"] = user.Biography
+	}
+
+	if len(user.Location) > 0 {
+		userUpdated["location"] = user.Location
+	}
+
+	if len(user.Website) > 0 {
+		userUpdated["website"] = user.Website
+	}
+
+	userUpdated["birthday"] = user.Birthday
+
+	return userUpdated
+}
+
 func GetUserByEmail(email string) (models.User, bool, string) {
 	ctx, cancel := context.WithTimeout(context.Background(), getMaxExecutionTime())
 
