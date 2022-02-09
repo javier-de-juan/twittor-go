@@ -17,6 +17,7 @@ func Handle() {
 	router.HandleFunc("/login", middlew.IsDbConnected(routers.Login)).Methods("POST")
 	router.HandleFunc("/profile", middlew.IsDbConnected(middlew.IsValidJWT(routers.Profile))).Methods("GET")
 	router.HandleFunc("/profile", middlew.IsDbConnected(middlew.IsValidJWT(routers.UpdateProfile))).Methods("PUT")
+	router.HandleFunc("/tweet", middlew.IsDbConnected(middlew.IsValidJWT(routers.Tweet))).Methods("POST")
 
 	PORT    := getPort()
 	handler := cors.AllowAll().Handler(router)
