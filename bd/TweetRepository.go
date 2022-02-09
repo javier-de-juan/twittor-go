@@ -60,7 +60,7 @@ func GetTweetsFromUser(ID string, page int64) ([]*responseModel.Tweet, bool) {
 	}
 
 	// No me interesa un contexto. Con "TODO" lo que puedo hacer es esperar indefinidamente
-	for cursor.Next(context.TODO()){
+	for cursor.Next(context.TODO()) {
 		var tweet responseModel.Tweet
 		err := cursor.Decode(&tweet)
 
@@ -73,4 +73,24 @@ func GetTweetsFromUser(ID string, page int64) ([]*responseModel.Tweet, bool) {
 	}
 
 	return tweets, true
+}
+
+func DeleteTweet(ID string, UserId string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), getMaxExecutionTime())
+
+	defer cancel()
+
+	db := MongoCN.Database(dbName)
+	dbCollection := db.Collection(tweetCollection)
+
+	tweetId, _ := primitive.ObjectIDFromHex(ID)
+
+	condition := bson.M {
+		"_id": tweetId,
+		"user_id": UserId,
+	}
+
+	_, err := dbCollection.DeleteOne(ctx, condition)
+
+	return err
 }
