@@ -20,6 +20,10 @@ func Handle() {
 	router.HandleFunc("/tweet", middlew.IsDbConnected(middlew.IsValidJWT(routers.Tweet))).Methods("POST")
 	router.HandleFunc("/tweet", middlew.IsDbConnected(middlew.IsValidJWT(routers.GetTweets))).Methods("GET")
 	router.HandleFunc("/tweet", middlew.IsDbConnected(middlew.IsValidJWT(routers.DeleteTweet))).Methods("DELETE")
+	router.HandleFunc("/avatar", middlew.IsDbConnected(middlew.IsValidJWT(routers.UploadAvatar))).Methods("POST")
+	router.HandleFunc("/avatar", middlew.IsDbConnected(middlew.IsValidJWT(routers.GetAvatar))).Methods("GET")
+	router.HandleFunc("/banner", middlew.IsDbConnected(middlew.IsValidJWT(routers.UploadBanner))).Methods("POST")
+	router.HandleFunc("/banner", middlew.IsDbConnected(middlew.IsValidJWT(routers.GetBanner))).Methods("GET")
 
 	PORT    := getPort()
 	handler := cors.AllowAll().Handler(router)
