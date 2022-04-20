@@ -2,6 +2,7 @@ package routers
 
 import (
 	"github.com/javier-de-juan/twittor-go/bd"
+	"io"
 	"net/http"
 	"os"
 )
@@ -18,8 +19,21 @@ func GetAvatar(writer http.ResponseWriter, request *http.Request) {
 	profile, err := bd.GetUserById(userId)
 
 	if err != nil {
-		panic("User not found")
+		http.Error(writer, "User not found: ", http.StatusNotFound)
+		return
 	}
 
-	OpenFile, err := os.Open(avatarsPath + profile.Avatar)
+	profileAvatar, err := os.Open(avatarsPath + profile.Avatar)
+
+	if err != nil || len(profile.Avatar) < 1 {
+		http.Error(writer, "Avatar not found", http.StatusNotFound)
+		return
+	}
+
+	_, err = io.Copy(writer, profileAvatar)
+
+	if err != nil {
+		http.Error(writer, "Could not read avatar file: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
