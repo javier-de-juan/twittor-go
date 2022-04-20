@@ -15,7 +15,7 @@ const avatarPermissions os.FileMode = 0666
 func UploadAvatar(writer http.ResponseWriter, request *http.Request) {
 	file, handler, err := request.FormFile("avatar")
 	var extension = strings.Split(handler.Filename, ".")[1]
-	var filePath = avatarsPath + LoggedUser.ID.String() + "." + extension
+	var filePath = avatarsPath + LoggedUser.ID.Hex() + "." + extension
 
 	f, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE, avatarPermissions)
 
@@ -35,7 +35,7 @@ func UploadAvatar(writer http.ResponseWriter, request *http.Request) {
 	var status bool
 
 	user.Avatar = strings.ReplaceAll(filePath, avatarsPath, "")
-	status, err = bd.Update(user, LoggedUser.ID.String())
+	status, err = bd.Update(user, LoggedUser.ID.Hex())
 
 	if err != nil || !status {
 		http.Error(writer, "Could not save your avatar into DB: "+err.Error(), http.StatusInternalServerError)
@@ -44,4 +44,5 @@ func UploadAvatar(writer http.ResponseWriter, request *http.Request) {
 
 	writer.Header().Set("Content-type", "application/json")
 	writer.WriteHeader(http.StatusCreated)
+	writer.Write([]byte(request.Host + "/" + filePath))
 }
