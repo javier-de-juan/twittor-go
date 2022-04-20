@@ -71,6 +71,10 @@ func getUserInfoToUpdate(user models.User) map[string]interface{} {
 		userUpdated["lastName"] = user.LastName
 	}
 
+	if len(user.Avatar) > 0 {
+		userUpdated["avatar"] = user.Avatar
+	}
+
 	if len(user.Banner) > 0 {
 		userUpdated["banner"] = user.Banner
 	}
