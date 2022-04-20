@@ -15,7 +15,7 @@ const bannerPermissions os.FileMode = 0666
 func UploadBanner(writer http.ResponseWriter, request *http.Request) {
 	file, handler, err := request.FormFile("banner")
 	var extension = strings.Split(handler.Filename, ".")[1]
-	var filePath = bannersPath + LoggedUser.ID.String() + "." + extension
+	var filePath = bannersPath + LoggedUser.ID.Hex() + "." + extension
 
 	f, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE, bannerPermissions)
 
@@ -35,7 +35,7 @@ func UploadBanner(writer http.ResponseWriter, request *http.Request) {
 	var status bool
 
 	user.Banner = strings.ReplaceAll(filePath, bannersPath, "")
-	status, err = bd.Update(user, LoggedUser.ID.String())
+	status, err = bd.Update(user, LoggedUser.ID.Hex())
 
 	if err != nil || !status {
 		http.Error(writer, "Could not save your banner into DB: "+err.Error(), http.StatusInternalServerError)
@@ -44,4 +44,5 @@ func UploadBanner(writer http.ResponseWriter, request *http.Request) {
 
 	writer.Header().Set("Content-type", "application/json")
 	writer.WriteHeader(http.StatusCreated)
+	writer.Write([]byte(request.Host + "/" + filePath))
 }
