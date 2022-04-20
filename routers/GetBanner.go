@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-func GetAvatar(writer http.ResponseWriter, request *http.Request) {
+func GetBanner(writer http.ResponseWriter, request *http.Request) {
 	defer responseOnError(writer)
 
 	userId := request.URL.Query().Get("id")
@@ -23,17 +23,17 @@ func GetAvatar(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	profileAvatar, err := os.Open(avatarsPath + profile.Avatar)
+	profileBanner, err := os.Open(bannersPath + profile.Banner)
 
-	if err != nil {
-		http.Error(writer, "Image not found", http.StatusNotFound)
+	if err != nil || len(profile.Banner) < 1 {
+		http.Error(writer, "Banner not found", http.StatusNotFound)
 		return
 	}
 
-	_, err = io.Copy(writer, profileAvatar)
+	_, err = io.Copy(writer, profileBanner)
 
 	if err != nil {
-		http.Error(writer, "Could not upload read avatar file: "+err.Error(), http.StatusInternalServerError)
+		http.Error(writer, "Could not upload read banner file: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
